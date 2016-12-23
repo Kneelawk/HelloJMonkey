@@ -233,7 +233,7 @@ public class CPControl3 {
 						error.error(e);
 					}
 				}
-			});
+			}, "Application");
 			t.setContextClassLoader(loader);
 			t.start();
 			t.join();
