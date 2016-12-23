@@ -24,7 +24,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * CPControl v3.0<br>
+ * CPControl v3.1<br>
  * Sorry about the mess. This should be an entire library or at least a package,
  * but is stuffed into one class for ease of copy-and-paste.
  */
@@ -35,6 +35,8 @@ public class CPControl3 {
 	protected List<DependencyOperation> operations = new ArrayList<>();
 
 	protected URLClassLoader loader;
+
+	protected ErrorCallback errorCallback = DEFAULT_ERROR_CALLBACK;
 
 	public CPControl3(String mainClassName) {
 		this(mainClassName, PARENT);
@@ -97,7 +99,11 @@ public class CPControl3 {
 		return operation;
 	}
 
-	public void launch(String[] args) throws IOException {
+	public void setErrorCallback(ErrorCallback callback) {
+		errorCallback = callback;
+	}
+
+	public void launch(String[] args) throws IOException, InterruptedException {
 		ClassPath path = new ClassPath();
 
 		for (DependencyOperation operation : operations) {
@@ -111,23 +117,8 @@ public class CPControl3 {
 		URL[] urls = copyFilesToClassPath(path.classpath);
 		loader = new URLClassLoader(urls);
 
-		try {
-			Class<?> mainClass = loader.loadClass(mainClassName);
-			Method mainMethod = mainClass.getMethod("main", String[].class);
-			mainMethod.invoke(null, new Object[] { args });
-		} catch (ClassNotFoundException e) {
-			throw new IOException("Unable to load main class", e);
-		} catch (NoSuchMethodException e) {
-			throw new IOException("Unable to load main method", e);
-		} catch (SecurityException e) {
-			throw new IOException("Unable to start main class", e);
-		} catch (IllegalAccessException e) {
-			throw new IOException("Unable to invoke main method", e);
-		} catch (IllegalArgumentException e) {
-			throw new IOException("Unable to invoke main method", e);
-		} catch (InvocationTargetException e) {
-			throw new IOException("Unable to invoke main method", e);
-		}
+		Launcher launcher = new Launcher(loader, mainClassName, args, errorCallback);
+		launcher.start();
 	}
 
 	public static final String LIBS_DIR_NAME = "libs";
@@ -190,7 +181,64 @@ public class CPControl3 {
 		}
 	};
 
+	public static final ErrorCallback DEFAULT_ERROR_CALLBACK = new ErrorCallback() {
+		@Override
+		public void error(Throwable t) {
+			t.printStackTrace();
+		}
+	};
+
 	private static Set<File> librariesOnClasspath;
+
+	public static interface ErrorCallback {
+		public void error(Throwable t);
+	}
+
+	public static class Launcher {
+		protected ClassLoader loader;
+		protected String mainClass;
+		protected String[] args;
+		protected ErrorCallback error;
+
+		public Launcher(ClassLoader loader, String mainClass, String[] args, ErrorCallback error) {
+			this.loader = loader;
+			this.mainClass = mainClass;
+			this.args = args;
+			this.error = error;
+		}
+
+		public void start() throws InterruptedException {
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("Loading context class loader: "
+							+ Thread.currentThread().getContextClassLoader().getClass());
+					try {
+						Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(mainClass);
+						Method main = clazz.getMethod("main", String[].class);
+						main.invoke(null, new Object[] { args });
+					} catch (ClassNotFoundException e) {
+						error.error(e);
+					} catch (NoSuchMethodException e) {
+						error.error(e);
+					} catch (SecurityException e) {
+						error.error(e);
+					} catch (IllegalAccessException e) {
+						error.error(e);
+					} catch (IllegalArgumentException e) {
+						error.error(e);
+					} catch (InvocationTargetException e) {
+						error.error(e);
+					} catch (Exception e) {
+						error.error(e);
+					}
+				}
+			});
+			t.setContextClassLoader(loader);
+			t.start();
+			t.join();
+		}
+	}
 
 	public static interface DependencyOperation {
 		public void perform(ClassPath cp, File baseDir) throws IOException;

@@ -14,6 +14,8 @@ public class HelloJMonkeyLauncher {
 			cp.launch(args);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }
