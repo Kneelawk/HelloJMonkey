@@ -24,7 +24,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * CPControl v3.1<br>
+ * CPControl v3.1.1<br>
  * Sorry about the mess. This should be an entire library or at least a package,
  * but is stuffed into one class for ease of copy-and-paste.
  */
