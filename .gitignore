@@ -5,3 +5,6 @@
 /.cache-main
 /.classpath
 /.project
+
+# jme3 seems to extract its natives into the working directory
+/lib*.so
