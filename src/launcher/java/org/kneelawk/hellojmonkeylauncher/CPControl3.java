@@ -211,8 +211,6 @@ public class CPControl3 {
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					System.out.println("Loading context class loader: "
-							+ Thread.currentThread().getContextClassLoader().getClass());
 					try {
 						Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(mainClass);
 						Method main = clazz.getMethod("main", String[].class);
