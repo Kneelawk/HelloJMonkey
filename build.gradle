@@ -5,7 +5,14 @@ version = '0.0.1'
 
 ext.launcherMain = 'org.kneelawk.hellojmonkeylauncher.HelloJMonkeyLauncher'
 
-sourceSets { launcher }
+sourceSets {
+	launcher {
+		java {
+			srcDir 'src/launcher/java'
+			srcDir 'CPControl/src/main/java'
+		}
+	}
+}
 
 repositories {
 	maven {

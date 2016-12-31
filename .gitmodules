@@ -1,0 +1,3 @@
+[submodule "CPControl"]
+	path = CPControl
+	url = git@github.com:Kneelawk/CPControl.git
