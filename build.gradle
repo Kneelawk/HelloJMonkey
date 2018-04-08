@@ -27,6 +27,7 @@ dependencies {
 	compile 'org.jmonkeyengine:jme3-core:3.2.1-stable'
 	compile 'org.jmonkeyengine:jme3-lwjgl3:3.2.1-stable'
 	compile 'org.jmonkeyengine:jme3-desktop:3.2.1-stable'
+	compile 'org.jmonkeyengine:jme3-effects:3.2.1-stable'
 	compile 'org.log4s:log4s_2.12:1.6.1'
 	compile 'org.slf4j:slf4j-jdk14:1.7.25'
 }
