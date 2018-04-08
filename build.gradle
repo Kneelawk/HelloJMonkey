@@ -24,9 +24,10 @@ repositories {
 
 dependencies {
 	compile 'org.scala-lang:scala-library:2.12.5'
-	compile 'org.jmonkeyengine:jme3-core:3.1.0-beta2'
-	compile 'org.jmonkeyengine:jme3-lwjgl3:3.1.0-beta2'
-	compile 'org.jmonkeyengine:jme3-desktop:3.1.0-beta2'
+	compile 'org.jmonkeyengine:jme3-core:3.2.1-stable'
+	compile 'org.jmonkeyengine:jme3-lwjgl3:3.2.1-stable'
+	compile 'org.jmonkeyengine:jme3-desktop:3.2.1-stable'
+	compile 'org.log4s:log4s_2.12:1.6.1'
 }
 
 // builds the launch jar
