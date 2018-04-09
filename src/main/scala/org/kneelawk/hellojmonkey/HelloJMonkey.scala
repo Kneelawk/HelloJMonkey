@@ -13,14 +13,9 @@ import com.jme3.post.FilterPostProcessor
 import com.jme3.post.filters.BloomFilter
 import com.jme3.post.filters.LightScatteringFilter
 
-object HelloJMonkey extends SimpleApplication {
+class HelloJMonkey extends SimpleApplication {
   val log = getLogger
-
-  def main(args: Array[String]) {
-    log.info("Starting up...")
-    setShowSettings(false)
-    start
-  }
+  log.info("Starting up...")
 
   def simpleInitApp() {
     log.info("Init simple app")
@@ -39,5 +34,13 @@ object HelloJMonkey extends SimpleApplication {
     bloom.setBlurScale(1.2f)
     fpp.addFilter(bloom)
     viewPort.addProcessor(fpp)
+  }
+}
+
+object HelloJMonkey {
+  def main(args: Array[String]) {
+    val app = new HelloJMonkey
+    app.setShowSettings(false)
+    app.start()
   }
 }
