@@ -1,18 +1,18 @@
-apply plugin: 'scala'
-apply plugin: 'eclipse'
-
-version = '0.0.1'
-
-ext.launcherMain = 'org.kneelawk.hellojmonkeylauncher.HelloJMonkeyLauncher'
-
-sourceSets {
-	launcher {
-		java {
-			srcDir 'src/launcher/java'
-			srcDir 'CPControl/src/main/java'
+buildscript {
+	repositories {
+		maven {
+			name 'Kneelawks Github Maven Repository'
+			url 'https://raw.githubusercontent.com/Kneelawk/maven-repository/master/'
 		}
 	}
+	dependencies { classpath 'com.github.kneelawk:kwrapper-gradle:0.0.1' }
 }
+
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+apply plugin: 'com.github.kneelawk.kwrapper-gradle'
+
+version = '0.0.1'
 
 repositories {
 	maven {
@@ -33,17 +33,8 @@ dependencies {
 }
 
 // builds the launch jar
-task launcherJar(type: Jar, dependsOn: [jar, launcherClasses]) {
-	manifest { attributes 'Main-Class': launcherMain }
-	baseName "${project.name}-all"
-	from(configurations.compile) { into 'libs' }
-	from('dependencies/natives') { into 'natives' }
-	from(jar.outputs.files) { into 'app' }
-	from(sourceSets.launcher.output)
-	from('LICENSE')
-
-	group 'Build'
-	description 'Creates a jar with all dependencies included.'
+kwrapper {
+	launcherMain 'org.kneelawk.hellojmonkeylauncher.HelloJMonkeyLauncher'
+	
+	include('LICENSE', 'README.md')
 }
-
-assemble.dependsOn launcherJar
